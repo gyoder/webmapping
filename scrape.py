@@ -2,6 +2,7 @@ import requests
 import re
 import networkx as nx
 import sys
+import time
 
 class Link:
     def __init__(self, url):
@@ -48,31 +49,35 @@ with open('blacklist.txt', 'r') as f:
     blacklist = f.read().splitlines()
 
 if __name__ == '__main__':
-    #print(get_links('grace.pink'))
-    if not len(sys.argv) == 2:
-        print("Usage: python scrape.py <iterations>")
-        sys.exit(1)
-    DG = nx.DiGraph()
-    queue = [Link('grace.pink')]
-    for i in range(int(sys.argv[1])):
-        link = queue.pop(0)
-        print("Scanning:", link.url)
-        if not link.scanned:
-            link.scanned = True
-            DG.add_node(link)
-            try:
-                links = get_links(link.url)
-            except:
-                print("Failed to scan", link.url)
-                continue
-            for l in links:
-                if DG.has_node(Link(l)):
-                    DG.add_edge(link, Link(l))
-                else:
-                    queue.append(Link(l))
-                    DG.add_edge(link, Link(l))
-    print("Nodes:")
-    [print(str(n)) for n in DG.nodes]
-    
-    nx.write_graphml(DG, 'graph.graphml')
+    try:
+        #print(get_links('grace.pink'))
+        if not len(sys.argv) == 2:
+            print("Usage: python scrape.py <iterations>")
+            sys.exit(1)
+        DG = nx.DiGraph()
+        queue = [Link('grace.pink')]
+        for i in range(int(sys.argv[1])):
+            link = queue.pop(0)
+            print("Scanning:", link.url)
+            if not link.scanned:
+                link.scanned = True
+                DG.add_node(link)
+                try:
+                    links = get_links(link.url)
+                except:
+                    print("Failed to scan", link.url)
+                    time.sleep(2)
+                    continue
+                for l in links:
+                    if DG.has_node(Link(l)):
+                        DG.add_edge(link, Link(l))
+                    else:
+                        queue.append(Link(l))
+                        DG.add_edge(link, Link(l))
+    except KeyboardInterrupt:
+        print("\nProcess interrupted by user")
+    finally:
+        print("Nodes:")
+        [print(str(n)) for n in DG.nodes]
+        nx.write_graphml(DG, 'graph.graphml')
 
