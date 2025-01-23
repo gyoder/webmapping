@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classify Link</title>
+</head>
+<body>
+    <p>{{count}}</p>
+    <form action="/classify" method="post">
+        <input type="hidden" name="link" id="link" value="{{ link }}">
+
+        <button type="submit" name="classification" value="indie">Indie</button>
+        <button type="submit" name="classification" value="corporate">Corporate</button>
+        <button type="submit" name="classification" value="tool">Tool</button>
+        <button type="submit" name="classification" value="none">None</button>
+        <button type="submit" name="classification" value="review">Flag for Review</button>
+    </form>
+    <p><a href="https://{{link}}">{{link}}</a></p>
+
+    <iframe src="https://{{ link }}" id="templateFrame" style="width:100%; height:1000px;"></iframe>
+</body>
+</html>
